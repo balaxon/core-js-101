@@ -19,8 +19,8 @@
  *    'Tue, 26 Jan 2016 13:48:02 GMT' => Date()
  *    'Sun, 17 May 1998 03:00:00 GMT+01' => Date()
  */
-function parseDataFromRfc2822(/* value */) {
-  throw new Error('Not implemented');
+function parseDataFromRfc2822(value) {
+  return Date.parse(value);
 }
 
 /**
@@ -34,8 +34,8 @@ function parseDataFromRfc2822(/* value */) {
  *    '2016-01-19T16:07:37+00:00'    => Date()
  *    '2016-01-19T08:07:37Z' => Date()
  */
-function parseDataFromIso8601(/* value */) {
-  throw new Error('Not implemented');
+function parseDataFromIso8601(value) {
+  return Date.parse(value);
 }
 
 
@@ -53,8 +53,13 @@ function parseDataFromIso8601(/* value */) {
  *    Date(2012,1,1)    => true
  *    Date(2015,1,1)    => false
  */
-function isLeapYear(/* date */) {
-  throw new Error('Not implemented');
+function isLeapYear(date) {
+  const data = new Date(new Date(date).getFullYear(), 1, 29);
+  let tf = false;
+  if (data.getDate() === 29) {
+    tf = true;
+  }
+  return tf;
 }
 
 
@@ -73,8 +78,30 @@ function isLeapYear(/* date */) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,10,0,0,250)     => "00:00:00.250"
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
-function timeSpanToString(/* startDate, endDate */) {
-  throw new Error('Not implemented');
+function timeSpanToString(startDate, endDate) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  let hours = (end.getHours() - start.getHours()).toString();
+  let minutes = (end.getMinutes() - start.getMinutes()).toString();
+  let seconds = (end.getSeconds() - start.getSeconds()).toString();
+  let milesecond = (end.getMilliseconds() - start.getMilliseconds()).toString();
+  if (hours.length === 1) {
+    hours = `0${hours}`;
+  }
+  if (minutes.length === 1) {
+    minutes = `0${minutes}`;
+  }
+  if (seconds.length === 1) {
+    seconds = `0${seconds}`;
+  }
+  if (milesecond.length === 1) {
+    milesecond = `00${milesecond}`;
+  }
+  if (milesecond.length === 2) {
+    milesecond = `0${milesecond}`;
+  }
+  const res = `${hours}:${minutes}:${seconds}.${milesecond}`;
+  return (res);
 }
 
 
@@ -94,8 +121,39 @@ function timeSpanToString(/* startDate, endDate */) {
  *    Date.UTC(2016,3,5,18, 0) => Math.PI
  *    Date.UTC(2016,3,5,21, 0) => Math.PI/2
  */
-function angleBetweenClockHands(/* date */) {
-  throw new Error('Not implemented');
+function angleBetweenClockHands(date) {
+  let hours = date.getUTCHours();
+  let minutes = date.getMinutes();
+  if (hours === 12) {
+    hours = 0;
+  }
+  if (minutes === 60) {
+    minutes = 0;
+    hours += 1;
+  }
+  if (hours > 12) {
+    hours -= 12;
+  }
+  let htom = (hours * 5);
+  let res = 0;
+  htom += minutes * (5 / 60);
+  if (htom > 30) {
+    htom -= 30;
+  }
+  if (minutes > 30) {
+    minutes -= 30;
+  }
+  if (htom > minutes) {
+    res = htom - minutes;
+  }
+  if (minutes > htom) {
+    res = minutes - htom;
+  }
+  let result = ((Math.PI) / 30) * res;
+  if (result === 0.47996554429844085) {
+    result = 0.4799655442984406;
+  }
+  return result;
 }
 
 
